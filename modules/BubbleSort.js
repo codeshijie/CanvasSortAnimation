@@ -1,11 +1,14 @@
 export default function BubbleSort(canvas) {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');
+    this.fontSize = 25;
+    this.ctx.font = `bold 24px serif`;
+    this.iMove = {};
+    this.jMove = {};
     this.timeOut = 500;
-    this.xCoord = 30;
-    this.yCoord = 30;
-    this.fontSize = 24;
-    this.ctx.font = `${this.fontSize}px`; 
+    this.timeAnimation = new Date();
+    this.xCoord = 50;
+    this.yCoord = 50;
 }
 
 BubbleSort.prototype.random = function () {
@@ -21,8 +24,7 @@ BubbleSort.prototype.sort = function (i = 0, j = 1, loop = 0) {
         return;
     }
     if (this.array[i] > this.array[j]) {
-        this.drawSort(i, j);
-        window.setTimeout(() => this.sort(j, j + 1, loop), this.timeOut);
+        this.changeSort(i, j, loop);
     } else {
         this.sort(j, j + 1, loop);
     }
@@ -34,9 +36,37 @@ BubbleSort.prototype.draw = function () {
         this.ctx.fillText(this.array[i], this.xCoord, this.yCoord * (i + 1));
     }
 }
-BubbleSort.prototype.drawSort = function (i, j) { 
-    let temp = this.array[j];
-    this.array[j] = this.array[i];
-    this.array[i] = temp;
-    this.draw();
+BubbleSort.prototype.step = function () {
+    if (new Date() - this.timeAnimation <= this.timeOut) {
+        let ratioY = (new Date() - this.timeAnimation) / this.timeOut;
+        let ratioX = Math.sin(Math.PI * ratioY);
+        this.drawStepI(ratioX, ratioY);
+        this.drawStepJ(ratioX, ratioY);
+        window.requestAnimationFrame(() => { this.step() });
+    } else {
+        let temp = this.array[this.jMove.index];
+        this.array[this.jMove.index] = this.array[this.iMove.index];
+        this.array[this.iMove.index] = temp;
+        this.draw();
+        this.sort(this.jMove.index, this.jMove.index + 1, this.jMove.loop);
+    }
+}
+BubbleSort.prototype.drawStepI = function (ratioX, ratioY) {
+    this.ctx.clearRect(this.iMove.x, this.iMove.y - this.fontSize, this.fontSize, this.fontSize);
+    this.iMove.x = this.xCoord + this.xCoord * 0.5 * ratioX;
+    this.iMove.y = this.yCoord * (this.iMove.index + 1) + this.yCoord * (this.jMove.index - this.iMove.index) * ratioY;
+    this.ctx.fillText(this.array[this.iMove.index], this.iMove.x, this.iMove.y);
+
+}
+BubbleSort.prototype.drawStepJ = function (ratioX, ratioY) {
+    this.ctx.clearRect(this.jMove.x, this.jMove.y - this.fontSize, this.fontSize, this.fontSize);
+    this.jMove.x = this.xCoord + this.xCoord * 1.6 * ratioX;
+    this.jMove.y = this.yCoord * (this.jMove.index + 1) - this.yCoord * (this.jMove.index - this.iMove.index) * ratioY;
+    this.ctx.fillText(this.array[this.jMove.index], this.jMove.x, this.jMove.y);
+}
+BubbleSort.prototype.changeSort = function (i, j, loop) {
+    this.timeAnimation = new Date();
+    this.iMove = { x: this.xCoord, y: this.yCoord * (i + 1), index: i, loop: loop };
+    this.jMove = { x: this.xCoord, y: this.yCoord * (j + 1), index: j, loop: loop };
+    window.requestAnimationFrame(() => { this.step() });
 }
