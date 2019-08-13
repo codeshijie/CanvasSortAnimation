@@ -10,10 +10,7 @@ AlgorithmCanvas.prototype.init = function () {
 }
 
 AlgorithmCanvas.prototype.drawBubbleSort = function () {
-    let ctx = this.canvas.getContext('2d')
-    ctx.font = "14px serif";
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    let bubbleSort = new BubbleSort(ctx)
+    let bubbleSort = new BubbleSort(this.canvas)
     bubbleSort.random();
     bubbleSort.draw();
     bubbleSort.sort();
