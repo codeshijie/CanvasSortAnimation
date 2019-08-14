@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,24 +8,47 @@
     <title>排序</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
-        body {
-            font-size: 16px;
-            line-height: 1.2
+        html {
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        button {
+            position: fixed;
+            left: 50%;
+            bottom: 20px;
+            transform: translate(-50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            outline: none;
+        }
+
+        canvas {
+            display: block;
+
         }
     </style>
 </head>
+
 <body>
-    <canvas></canvas>
+    <button>刷新</button>
     <script type="module">
         import AlgorithmCanvas from "./js/index.js"
-        let canvas = new AlgorithmCanvas("canvas");
-        canvas.init();
+        let canvas = new AlgorithmCanvas();
         canvas.drawBubbleSort();
+
+        document.querySelector("button").onclick = function () {
+            canvas.destory();
+            canvas = new AlgorithmCanvas();
+            canvas.drawBubbleSort();
+        }
+
     </script>
 </body>
 

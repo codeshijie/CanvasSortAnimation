@@ -28,7 +28,7 @@ BubbleSort.prototype.sort = function (i = 0, j = 1, loop = 0) {
         this.changeSort(i, j, loop);
     } else {
         this.sort(j, j + 1, loop);
-    }
+    } 
 }
 
 BubbleSort.prototype.changeSort = function (i, j, loop) {
