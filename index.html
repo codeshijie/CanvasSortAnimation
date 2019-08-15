@@ -38,18 +38,7 @@
 
 <body>
     <button>刷新</button>
-    <script type="module">
-        import AlgorithmCanvas from "./js/index.js"
-        let canvas = new AlgorithmCanvas();
-        canvas.drawBubbleSort();
-
-        document.querySelector("button").onclick = function () {
-            canvas.destory();
-            canvas = new AlgorithmCanvas();
-            canvas.drawBubbleSort();
-        }
-
-    </script>
+    <script src="dist/main.js"></script>
 </body>
 
 </html>
