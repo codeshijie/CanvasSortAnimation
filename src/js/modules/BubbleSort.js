@@ -1,11 +1,13 @@
 export default class BubbleSort {
-    animationDuration = 400;
-    xCoordFactor = 50;
-    yCoordFactor = 50;
-    fontSize = 24;
-  
-    timeAnimation = new Date();
+
     constructor(canvas) {
+
+        this.animationDuration = 400;
+        this.xCoordFactor = 50;
+        this.yCoordFactor = 50;
+        this.fontSize = 24;
+        this.timeAnimation = new Date();
+
         this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
         this.ctx.font = `bold ${this.fontSize}px serif`;
@@ -73,7 +75,7 @@ export default class BubbleSort {
         this.ctx.fillText(this.array[this.iMove.index], this.iMove.x, this.iMove.y);
 
     }
-    _drawStepJ = function (ratioX, ratioY) {
+    _drawStepJ(ratioX, ratioY) {
         this.ctx.clearRect(this.jMove.x, this.jMove.y - this.fontSize, this.fontSize, this.fontSize);
         this.jMove.x = this.xCoordFactor + this.xCoordFactor * 1.6 * ratioX;
         this.jMove.y = this.yCoordFactor * (this.jMove.index + 1) - this.yCoordFactor * (this.jMove.index - this.iMove.index) * ratioY;

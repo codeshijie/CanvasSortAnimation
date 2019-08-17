@@ -1,9 +1,12 @@
 export default class QuickSort {
-    elementCount = 14;
-    yCoordStart = 30;
-    yCoordEnd = 500;
-    yCoordHeight = this.yCoordEnd - this.yCoordStart;
+
     constructor(canvas) {
+
+        this.elementCount = 14;
+        this.yCoordStart = 30;
+        this.yCoordEnd = 500;
+        this.yCoordHeight = this.yCoordEnd - this.yCoordStart;
+
         this.canvas = canvas;
         this.ctx = this.canvas.getContext("2d");
         this.array = null;
