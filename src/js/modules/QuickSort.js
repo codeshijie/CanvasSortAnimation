@@ -12,9 +12,9 @@ export default class QuickSort {
         this.draw();
         setTimeout(() => {
 
-            this.sort(" ", 0, this.elementCount - 1);
+            this.sort(0, this.elementCount - 1);
             this.draw();
-        }, 2000)
+        }, 1000)
     }
     random() {
         this.array = new Array();
@@ -30,7 +30,7 @@ export default class QuickSort {
             this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
         }
     }
-    sort(a, start, end) {
+    sort(start, end) {
         if (start >= end) return;
         let start1 = start;
         let end1 = end;
@@ -58,7 +58,7 @@ export default class QuickSort {
 
             }
         }
-        this.sort(" " + a, start, start1)
-        this.sort(" " + a, start1 + 1, end)
+        this.sort(start, start1)
+        this.sort(start1 + 1, end)
     }
 }
