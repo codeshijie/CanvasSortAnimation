@@ -12,7 +12,7 @@ export default class AlgorithmCanvas {
         }
         this.canvas = document.createElement("canvas");
         this.canvas.width = Math.max(window.innerWidth, 320);
-        this.canvas.height = Math.max(window.innerHeight, 568);
+        this.canvas.height = Math.max(window.innerHeight, 568) - 60;
         document.body.appendChild(this.canvas);
         new this.sort[this.sortIndex](this.canvas);
 

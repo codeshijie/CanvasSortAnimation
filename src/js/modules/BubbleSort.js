@@ -10,7 +10,8 @@ export default class BubbleSort {
         this.ctx = this.canvas.getContext('2d');
         this.ctx.font = `bold ${this.fontSize}px serif`;
         this.iMove = {};
-        this.jMove = {}
+        this.jMove = {};
+        this.array = null;
         this.random();
         this.draw();
         this.sort();
