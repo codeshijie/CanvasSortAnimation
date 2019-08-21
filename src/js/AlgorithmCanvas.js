@@ -14,8 +14,9 @@ export default class AlgorithmCanvas {
         this.canvas.width = Math.max(window.innerWidth, 320);
         this.canvas.height = Math.max(window.innerHeight, 568) - 60;
         document.body.appendChild(this.canvas);
-        new this.sort[this.sortIndex](this.canvas);
-
+        let temp = new this.sort[this.sortIndex](this.canvas);
+        document.title = temp.sortName;
+        temp.begin();
     }
     prior() {
         if (this.sortIndex === 0) {
