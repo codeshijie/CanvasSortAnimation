@@ -4,7 +4,7 @@ export default class QuickSort {
         this.sortName = '快速排序算法';
         this.elementCount = 12;
         this.yCoordStart = 10;
-        this.yCoordEnd = 520;
+        this.yCoordEnd = 490;
         this.animationDuration = 380;
         this.yCoordHeight = this.yCoordEnd - this.yCoordStart;
 
@@ -135,6 +135,7 @@ export default class QuickSort {
     }
     drawParenthesesLine(changeArrayItem) {
         this.ctx.beginPath()
+        this.ctx.strokeStyle = '#666'
         if (changeArrayItem.sourceIndex <= changeArrayItem.targetIndex) {
             this.ctx.bezierCurveTo(this.itemWidth * changeArrayItem.sourceIndex * 2 + this.itemWidth / 2, this.yCoordEnd + 5,
                 this.itemWidth * (changeArrayItem.sourceIndex + changeArrayItem.targetIndex) + this.itemWidth, this.yCoordEnd + 60,
