@@ -2,10 +2,10 @@ export default class QuickSort {
 
     constructor(canvas) {
         this.sortName = '快速排序算法';
-        this.elementCount = 14;
+        this.elementCount = 12;
         this.yCoordStart = 10;
         this.yCoordEnd = 520;
-        this.animationDuration = 200;
+        this.animationDuration = 380;
         this.yCoordHeight = this.yCoordEnd - this.yCoordStart;
 
         this.canvas = canvas;
@@ -29,7 +29,7 @@ export default class QuickSort {
     }
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = '#999'
+        this.ctx.fillStyle = '#ccc'
         for (let i = 0; i < this.elementCount; i++) {
             let height = this.yCoordHeight * (this.array[i] / 100);
             this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
@@ -48,7 +48,7 @@ export default class QuickSort {
                     let temp = this.array[start1];
                     this.array[start1] = this.array[end1];
                     this.array[end1] = temp;
-                    this.changeArray.push({ sourceIndex: start1, targetIndex: end1, snapshot: JSON.parse(JSON.stringify(this.array)) });
+                    this.changeArray.push({ sourceIndex: start1, targetIndex: end1, snapshot: JSON.parse(JSON.stringify(this.array)), change: true });
                     break;
                 }
                 this.changeArray.push({ sourceIndex: start1, targetIndex: end1, snapshot: JSON.parse(JSON.stringify(this.array)) });
@@ -59,10 +59,10 @@ export default class QuickSort {
                     let temp = this.array[start1];
                     this.array[start1] = this.array[end1];
                     this.array[end1] = temp
-                    this.changeArray.push({ sourceIndex: start1, targetIndex: end1, snapshot: JSON.parse(JSON.stringify(this.array)) });
+                    this.changeArray.push({ sourceIndex: end1, targetIndex: start1, snapshot: JSON.parse(JSON.stringify(this.array)), change: true });
                     break;
                 }
-                this.changeArray.push({ sourceIndex: start1, targetIndex: end1, snapshot: JSON.parse(JSON.stringify(this.array)) });
+                this.changeArray.push({ sourceIndex: end1, targetIndex: start1, snapshot: JSON.parse(JSON.stringify(this.array)) });
 
             }
         }
@@ -71,28 +71,80 @@ export default class QuickSort {
     }
 
     drawSort(loop) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        let dateTimeNow = new Date();
         let changeArrayItem = this.changeArray[loop];
-        for (let i = 0; i < this.elementCount; i++) {
-            let height = this.yCoordHeight * (changeArrayItem.snapshot[i] / 100);
-            if (i === changeArrayItem.sourceIndex) {
-                this.ctx.fillStyle = '#333'
-            } else {
-                this.ctx.fillStyle = '#999'
-            }
-            this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
+        if (changeArrayItem.change) {
+            this.drawChangeItem(changeArrayItem, dateTimeNow)
+        } else {
+            this.drawUnChangeItem(changeArrayItem)
         }
-        this.ctx.beginPath()
-        this.ctx.bezierCurveTo(this.itemWidth * changeArrayItem.sourceIndex * 2 + this.itemWidth / 2, this.yCoordEnd + 5,
-            this.itemWidth * (changeArrayItem.sourceIndex + changeArrayItem.targetIndex) + this.itemWidth, this.yCoordEnd + 60,
-            this.itemWidth * changeArrayItem.targetIndex * 2 + this.itemWidth + + this.itemWidth / 2, this.yCoordEnd + 5);
-
-        this.ctx.stroke();
         if (loop < this.changeArray.length - 1) {
             setTimeout(() => { this.drawSort(++loop); }, this.animationDuration)
         } else {
             setTimeout(() => { this.draw(); }, this.animationDuration)
-
         }
     }
+    drawChangeItem(changeArrayItem, dateTime) {
+        let ratio = (new Date() - dateTime) / this.animationDuration;
+        if (ratio > 1) return;
+        this.ctx.save();
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let i = 0; i < this.elementCount; i++) {
+            let height = this.yCoordHeight * (changeArrayItem.snapshot[i] / 100);
+            if (i === changeArrayItem.sourceIndex) {
+                this.ctx.fillStyle = '#f25022';
+                this.ctx.globalCompositeOperation="source-over";
+                let x = this.itemWidth * changeArrayItem.sourceIndex * 2 + this.itemWidth / 2 + ((changeArrayItem.targetIndex - changeArrayItem.sourceIndex) * this.itemWidth * 2) * ratio
+                this.ctx.fillRect(x, this.yCoordEnd, this.itemWidth, -height);
+
+            } else if (i === changeArrayItem.targetIndex) {
+                this.ctx.fillStyle = '#ffb901';
+                this.ctx.globalCompositeOperation="source-over";
+                let x = this.itemWidth * changeArrayItem.targetIndex * 2 + this.itemWidth / 2 + ((changeArrayItem.sourceIndex - changeArrayItem.targetIndex) * this.itemWidth * 2) * ratio
+                this.ctx.fillRect(x, this.yCoordEnd, this.itemWidth, -height);
+
+            } else {
+                this.ctx.fillStyle = '#ccc'
+                this.ctx.globalCompositeOperation="destination-over";
+                this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
+            }
+        }
+        this.ctx.restore();
+        this.drawParenthesesLine(changeArrayItem);
+        window.requestAnimationFrame(() => { this.drawChangeItem(changeArrayItem, dateTime) });
+    }
+    drawUnChangeItem(changeArrayItem) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (let i = 0; i < this.elementCount; i++) {
+            let height = this.yCoordHeight * (changeArrayItem.snapshot[i] / 100);
+            if (i === changeArrayItem.sourceIndex) {
+                this.ctx.fillStyle = '#f25022';
+                this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
+
+            } else if (i === changeArrayItem.targetIndex) {
+                this.ctx.fillStyle = '#ffb901';
+
+                  this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
+
+            } else {
+                this.ctx.fillStyle = '#ccc'
+                this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
+            }
+        }
+        this.drawParenthesesLine(changeArrayItem);
+    }
+    drawParenthesesLine(changeArrayItem) {
+        this.ctx.beginPath()
+        if (changeArrayItem.sourceIndex <= changeArrayItem.targetIndex) {
+            this.ctx.bezierCurveTo(this.itemWidth * changeArrayItem.sourceIndex * 2 + this.itemWidth / 2, this.yCoordEnd + 5,
+                this.itemWidth * (changeArrayItem.sourceIndex + changeArrayItem.targetIndex) + this.itemWidth, this.yCoordEnd + 60,
+                this.itemWidth * changeArrayItem.targetIndex * 2 + this.itemWidth + + this.itemWidth / 2, this.yCoordEnd + 5);
+        } else {
+            this.ctx.bezierCurveTo(this.itemWidth * changeArrayItem.sourceIndex * 2 + this.itemWidth + this.itemWidth / 2, this.yCoordEnd + 5,
+                this.itemWidth * (changeArrayItem.sourceIndex + changeArrayItem.targetIndex) + this.itemWidth, this.yCoordEnd + 60,
+                this.itemWidth * changeArrayItem.targetIndex * 2 + this.itemWidth / 2, this.yCoordEnd + 5);
+        }
+        this.ctx.stroke();
+    }
+
 }
