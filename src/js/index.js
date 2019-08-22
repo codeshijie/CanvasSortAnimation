@@ -1,4 +1,6 @@
 import AlgorithmCanvas from "./AlgorithmCanvas.js" 
+import "../style/style.css"
+import "../style/font_1356766_67kn1ki45s.css"
 let algorithmCanvas = new AlgorithmCanvas();
 
 document.querySelector("button:nth-of-type(1)").onclick = () => {
