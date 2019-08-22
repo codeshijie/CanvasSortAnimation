@@ -24,7 +24,7 @@ export default class QuickSort {
     random() {
         this.array = new Array();
         for (let i = 0; i < this.elementCount; i++) {
-            this.array.push(Math.floor(Math.random() * 100));
+            this.array.push(Math.floor(Math.random() * 100 + 1));
         }
     }
     draw() {
