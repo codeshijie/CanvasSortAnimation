@@ -2,6 +2,7 @@ export default class BubbleSort {
 
     constructor(canvas) {
         this.sortName = '冒泡排序算法';
+        this.elementCount = 8;
         this.animationDuration = 400;
         this.xCoordFactor = 50;
         this.yCoordFactor = 50;
@@ -25,7 +26,7 @@ export default class BubbleSort {
 
     random() {
         this.array = new Array();
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < this.elementCount; i++) {
             this.array.push(Math.floor(Math.random() * 100));
         }
     }

@@ -1,9 +1,10 @@
 import BubbleSort from "./modules/BubbleSort.js"
 import QuickSort from "./modules/QuickSort.js"
+import ShellSort from "./modules/ShellSort.js"
 
 export default class AlgorithmCanvas {
     constructor() {
-        this.sort = [QuickSort, BubbleSort]
+        this.sort = [ShellSort, QuickSort, BubbleSort]
         this.sortIndex = 0;
     }
     start() {
