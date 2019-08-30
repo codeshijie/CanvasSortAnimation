@@ -41,12 +41,14 @@ export default class ShellSort {
         this.ctx.stroke();
         this.ctx.restore();
     }
-    sort(group, i = 0) {
-        this.sortInsert(i, group).then(res => {
-            if (i < group) {
-                this.sort(group, ++i);
+    sort(group, begin = 0) {
+        this.sortInsert(begin, group).then(res => {
+            if (begin < group) {
+                this.sort(group, ++begin);
             } else if (group > 1) {
                 this.sort(Math.floor(group / 2));
+            } else if (group == 1) {
+                this.draw();
             }
         })
     }
@@ -82,11 +84,12 @@ export default class ShellSort {
     sortInsertOneMove(i, group, moveValue, resolve) {
         let j = i - group;
         if (j >= 0 && this.array[j] > moveValue) {
-            this.array[j + group] = this.array[j];
-            this.sortInsertOneMove(j, group, moveValue, resolve);
+            setTimeout(() => {
+                this.array[j + group] = this.array[j];
+                this.sortInsertOneMove(j, group, moveValue, resolve);
+            }, 100)
         } else {
             this.array[j + group] = moveValue;
-            console.log(this.array)
             resolve();
         }
     }
