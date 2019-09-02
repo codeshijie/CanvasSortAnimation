@@ -16,7 +16,6 @@ export default class ShellSort {
     }
     begin() {
         this.random();
-        console.log(this.array);
         this.draw();
         this.sort(Math.round(this.array.length / 2));
     }
