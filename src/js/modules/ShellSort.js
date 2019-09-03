@@ -8,10 +8,9 @@ export default class ShellSort {
         this.animationDuration = 400;
         this.xCoordFactor = this.canvas.width / this.elementCount;
         this.yCoordFactor = 40;
-        this.fontSize = 10;
+        this.fontSize = 14;
         this.ctx.font = ` ${this.fontSize}px serif`;
-
-        this.sortNowDate = {};
+        this.sortDrawDate = {};
         this.sortNowDatPrevious = {};
     }
     begin() {
@@ -28,45 +27,60 @@ export default class ShellSort {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         for (let i = 0; i < this.array.length; i++) {
-            if (this.sortNowDate.begin != undefined && i % this.sortNowDate.group === this.sortNowDate.begin) {
-                let color = '#666'
-                if (i <= this.sortNowDate.sortRange) {
+
+            let x = this.xCoordFactor * (i);
+            let y = this.yCoordFactor;
+            let color = '#666'
+            if (this.sortDrawDate.begin != undefined && i % this.sortDrawDate.group === this.sortDrawDate.begin) {
+                x = this.xCoordFactor * (i);
+                y = this.yCoordFactor + this.xCoordFactor;
+                if (this.array[this.sortDrawDate.targetIndex] > this.array[this.sortDrawDate.sourceIndex] &&
+                    this.sortDrawDate.xChangeTime) {
+                    let ratioX = (new Date() - this.sortDrawDate.xChangeTime) / this.animationDuration;
+                    let multiplier = 0;
+                    if (i === this.sortDrawDate.targetIndex) {
+                        multiplier = 1;
+                    }
+                    if (i === this.sortDrawDate.sourceIndex) {
+                        multiplier = -1;
+                    }
+                    x = this.xCoordFactor * (i) + ratioX * this.xCoordFactor * this.sortDrawDate.group * multiplier;
+                }
+                if ((new Date() - this.sortDrawDate.ydownChangeTime) < this.animationDuration) {
+                    let ratioY = (new Date() - this.sortDrawDate.ydownChangeTime) / this.animationDuration;
+                    y = this.yCoordFactor + this.xCoordFactor * ratioY;
+                }
+                if ((new Date() - this.sortDrawDate.yUpChangeTime) < this.animationDuration && this.sortDrawDate.group != 1) {
+                    let ratioY = (new Date() - this.sortDrawDate.yUpChangeTime) / this.animationDuration;
+                    y = this.yCoordFactor + this.xCoordFactor - this.xCoordFactor * ratioY;
+                }
+                if (i <= this.sortDrawDate.sortRange) {
                     color = 'green'
                 }
-                if (i === this.sortNowDate.sourceIndex) {
+                if (i === this.sortDrawDate.sourceIndex) {
                     color = '#f25022'
                 }
-                if (i === this.sortNowDate.targetIndex) {
+                if (i === this.sortDrawDate.targetIndex) {
                     color = '#ffb901'
                 }
-                if (i < this.sortNowDate.sourceIndex && i < this.sortNowDate.targetIndex) {
+                if (this.sortDrawDate.done) {
                     color = 'green'
                 }
-                if (this.sortNowDate.done) {
-                    color = 'green'
-                }
-                this.drawOne(this.xCoordFactor * (i), this.yCoordFactor + this.xCoordFactor, this.array[i], color)
-            } else {
-                this.drawOne(this.xCoordFactor * (i), this.yCoordFactor, this.array[i])
             }
+            this.drawOne(x, y, i, color)
         }
+        window.requestAnimationFrame(() => { this.draw() })
     }
-    drawOne(x, y, value, color) {
+    drawOne(x, y, index, color) {
         this.ctx.save();
         this.ctx.beginPath();
         this.ctx.arc(x + this.xCoordFactor / 2, y + this.xCoordFactor / 2, this.xCoordFactor / 2 - 5, 0, Math.PI * 2)
- 
-        if (color) {
-            this.ctx.fillStyle = color;
-            this.ctx.fill();
-            this.ctx.fillStyle = "#fff";
-        } else {
-            this.ctx.fillStyle = "#000";
-            this.ctx.stroke();
-        }
+        this.ctx.fillStyle = color;
+        this.ctx.fill();
+        this.ctx.fillStyle = "#fff";
         this.ctx.textAlign = 'center'
         this.ctx.textBaseline = 'middle'
-        this.ctx.fillText(value, x + this.xCoordFactor / 2, y + this.xCoordFactor / 2);
+        this.ctx.fillText(this.array[index], x + this.xCoordFactor / 2, y + this.xCoordFactor / 2);
         this.ctx.restore();
     }
     drawLoop() {
@@ -86,25 +100,25 @@ export default class ShellSort {
         let promise = new Promise((res) => {
             resolve = res;
         });
-        this.sortNowDate = {
+        this.sortDrawDate = {
             begin,
-            group
+            group,
+            ydownChangeTime: new Date()
         }
-        this.draw();
         setTimeout(() => {
             this.sortInsert(begin, group, resolve)
-        }, this.animationDuration)
+        }, this.animationDuration * 2)
         return promise;
     }
 
     sortInsert(begin, group, resolve) {
         this.sortInsertPromise(begin, group).then(() => {
             if (begin + group < this.array.length) {
-                this.sortNowDate.sortRange = begin + group;
+                this.sortDrawDate.sortRange = begin + group;
                 this.sortInsert(begin + group, group, resolve)
             } else {
-                this.sortNowDate.done = true;
-                this.draw();
+                this.sortDrawDate.done = true;
+                this.sortDrawDate.yUpChangeTime = new Date()
                 setTimeout(() => {
                     resolve();
                 }, this.animationDuration)
@@ -121,10 +135,11 @@ export default class ShellSort {
     }
     sortInsertMove(i, group, resolve) {
         let j = i - group;
-        this.sortNowDate.sourceIndex = i;
-        this.sortNowDate.targetIndex = j;
+        this.sortDrawDate.sourceIndex = i;
+        this.sortDrawDate.targetIndex = j;
         if (j >= 0 && this.array[j] > this.array[i]) {
-            this.draw();
+            this.sortDrawDate.xChangeTime = new Date();
+
             setTimeout(() => {
                 let temp = this.array[i];
                 this.array[i] = this.array[j];
@@ -132,7 +147,7 @@ export default class ShellSort {
                 this.sortInsertMove(j, group, resolve);
             }, this.animationDuration)
         } else {
-            this.draw();
+            delete this.sortDrawDate.xChangeTime;
             if (j < 0) {
                 resolve();
             } else {
