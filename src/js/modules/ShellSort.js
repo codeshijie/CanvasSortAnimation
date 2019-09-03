@@ -1,22 +1,23 @@
+
 export default class ShellSort {
-    constructor(canvas) {
+    constructor(canvas, elementCount = 16, fontSize = 13) {
         this.sortName = '希尔排序算法';
-        this.elementCount = 12;
+        this.elementCount = elementCount;
         this.array = null;
         this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
         this.animationDuration = 400;
         this.xCoordFactor = this.canvas.width / this.elementCount;
         this.yCoordFactor = 40;
-        this.fontSize = 14;
+        this.fontSize = fontSize;
         this.ctx.font = ` ${this.fontSize}px serif`;
         this.sortDrawDate = {};
-        this.sortNowDatPrevious = {};
+        this.yMoveDuration = 1;
     }
     begin() {
         this.random();
         this.draw();
-        this.sort(Math.round(this.array.length / 2));
+        this.sort(Math.floor(this.array.length / 2));
     }
     random() {
         this.array = new Array();
@@ -74,7 +75,7 @@ export default class ShellSort {
     drawOne(x, y, index, color) {
         this.ctx.save();
         this.ctx.beginPath();
-        this.ctx.arc(x + this.xCoordFactor / 2, y + this.xCoordFactor / 2, this.xCoordFactor / 2 - 5, 0, Math.PI * 2)
+        this.ctx.arc(x + this.xCoordFactor / 2, y + this.xCoordFactor / 2, this.xCoordFactor / 2 - 1, 0, Math.PI * 2)
         this.ctx.fillStyle = color;
         this.ctx.fill();
         this.ctx.fillStyle = "#fff";
@@ -91,7 +92,7 @@ export default class ShellSort {
             if (begin + 1 < group) {
                 this.sort(group, ++begin);
             } else if (group > 1) {
-                this.sort(Math.round(group / 2));
+                this.sort(Math.floor(group / 2));
             }
         })
     }
@@ -107,7 +108,7 @@ export default class ShellSort {
         }
         setTimeout(() => {
             this.sortInsert(begin, group, resolve)
-        }, this.animationDuration * 2)
+        }, this.animationDuration * 2 * this.yMoveDuration)
         return promise;
     }
 
@@ -121,7 +122,7 @@ export default class ShellSort {
                 this.sortDrawDate.yUpChangeTime = new Date()
                 setTimeout(() => {
                     resolve();
-                }, this.animationDuration)
+                }, this.animationDuration * this.yMoveDuration)
             }
         })
     }
