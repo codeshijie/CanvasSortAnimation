@@ -1,12 +1,12 @@
 
 export default class ShellSort {
-    constructor(canvas, elementCount = 16, fontSize = 13) {
+    constructor(canvas, elementCount = 14, fontSize = 14) {
         this.sortName = '希尔排序算法';
         this.elementCount = elementCount;
         this.array = null;
         this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
-        this.animationDuration = 400;
+        this.animationDuration = 350;
         this.xCoordFactor = this.canvas.width / this.elementCount;
         this.yCoordFactor = 40;
         this.fontSize = fontSize;
@@ -75,7 +75,7 @@ export default class ShellSort {
     drawOne(x, y, index, color) {
         this.ctx.save();
         this.ctx.beginPath();
-        this.ctx.arc(x + this.xCoordFactor / 2, y + this.xCoordFactor / 2, this.xCoordFactor / 2 - 1, 0, Math.PI * 2)
+        this.ctx.arc(x + this.xCoordFactor / 2, y + this.xCoordFactor / 2, this.xCoordFactor / 2 - 0.5, 0, Math.PI * 2)
         this.ctx.fillStyle = color;
         this.ctx.fill();
         this.ctx.fillStyle = "#fff";
@@ -84,9 +84,7 @@ export default class ShellSort {
         this.ctx.fillText(this.array[index], x + this.xCoordFactor / 2, y + this.xCoordFactor / 2);
         this.ctx.restore();
     }
-    drawLoop() {
-        window.requestAnimationFrame()
-    }
+
     sort(group, begin = 0) {
         this.sortPromise(begin, group).then(res => {
             if (begin + 1 < group) {
