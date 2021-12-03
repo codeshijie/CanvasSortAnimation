@@ -1,0 +1,9 @@
+{
+  "name": "dance-algorithm",
+  "version": "1.0.0",
+  "description": "跳动的算法",
+  "main": "index.js",
+  "repository": "https://github.com/codeshijie/2019_CanvasSortAnimation.git",
+  "author": "xingyilong <xingyilong@haoduo.vip>",
+  "license": "MIT"
+}
