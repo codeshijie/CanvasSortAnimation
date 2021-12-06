@@ -1,21 +1,35 @@
 export default class BubbleSort {
+    static sortName = '冒泡排序';
+    constructor(option) {
+        this.elementCount = option.elementCount;
+        this.animationDuration = option.animationDuration || 400;
 
-    constructor(canvas) {
-        this.sortName = '冒泡排序算法';
-        this.elementCount = 8;
-        this.animationDuration = 400;
+
+        this.canvas = document.createElement("canvas");
+        this.canvas.width = option.canvasPositon.width;
+        this.canvas.height = option.canvasPositon.height;
+        document.body.appendChild(this.canvas);
+
+
         this.xCoordFactor = 50;
-        this.yCoordFactor = 50;
-        this.fontSize = 24;
-        this.timeAnimation = new Date();
+        this.yCoordFactor = (this.canvas.height - 50) / this.elementCount;
+        this.fontSize = this.canvas.height / this.elementCount / 1.5;
 
-        this.canvas = canvas;
+
         this.ctx = this.canvas.getContext('2d');
         this.ctx.font = `bold ${this.fontSize}px serif`;
+
+
         this.iMove = {};
         this.jMove = {};
         this.array = null;
+        //时间， 记录动画时刻
+        this.timeAnimation = null;
+        this.loop = 0;
 
+    }
+    destory() {
+        document.body.removeChild(this.canvas);
     }
 
     begin() {
@@ -31,16 +45,16 @@ export default class BubbleSort {
         }
     }
 
-    sort(i = 0, j = 1, loop = 0) {
-        if (loop === this.array.length) return;
-        if (i === this.array.length || j === this.array.length - loop) {
-            this.sort(0, 1, ++loop);
+    sort(i = 0, j = 1) {
+        if (this.loop === this.array.length) return;
+        if (i === this.array.length || j === this.array.length - this.loop) {
+            this.sort(0, 1, ++this.loop);
             return;
         }
         if (this.array[i] > this.array[j]) {
-            this._changeSort(i, j, loop);
+            this._changeSort(i, j, true);
         } else {
-            this.sort(j, j + 1, loop);
+            this._changeSort(i, j, false);
         }
     }
 
@@ -51,41 +65,39 @@ export default class BubbleSort {
         }
     }
 
-    _changeSort(i, j, loop) {
+    _changeSort(i, j, changeBoolen) {
         this.timeAnimation = new Date();
-        this.iMove = { x: this.xCoordFactor, y: this.yCoordFactor * (i + 1), index: i, loop: loop };
-        this.jMove = { x: this.xCoordFactor, y: this.yCoordFactor * (j + 1), index: j, loop: loop };
-        window.requestAnimationFrame(() => { this._step() });
+        this.iMove = { x: this.xCoordFactor, y: this.yCoordFactor * (i + 1), index: i };
+        this.jMove = { x: this.xCoordFactor, y: this.yCoordFactor * (j + 1), index: j };
+        this._step(changeBoolen);
     }
 
-    _step() {
+    _step(changeBoolen) {
         if (new Date() - this.timeAnimation <= this.animationDuration) {
             let ratioY = (new Date() - this.timeAnimation) / this.animationDuration;
             let ratioX = Math.sin(Math.PI * ratioY);
-            this._drawStepI(ratioX, ratioY);
-            this._drawStepJ(ratioX, ratioY);
-            window.requestAnimationFrame(() => { this._step() });
+            this._drawStep(this.iMove, ratioX * (changeBoolen ? 0.5 : 0.5), (changeBoolen ? ratioY : 0));
+            this._drawStep(this.jMove, ratioX * (changeBoolen ? 1.5 : 0.5), (changeBoolen ? -ratioY : 0));
+            window.requestAnimationFrame(() => { this._step(changeBoolen) });
         } else {
-            let temp = this.array[this.jMove.index];
-            this.array[this.jMove.index] = this.array[this.iMove.index];
-            this.array[this.iMove.index] = temp;
+            if (changeBoolen) {
+                let temp = this.array[this.jMove.index];
+                this.array[this.jMove.index] = this.array[this.iMove.index];
+                this.array[this.iMove.index] = temp;
+            }
             this.draw();
-            this.sort(this.jMove.index, this.jMove.index + 1, this.jMove.loop);
+            this.sort(this.jMove.index, this.jMove.index + 1);
         }
     }
-    _drawStepI(ratioX, ratioY) {
-        this.ctx.clearRect(this.iMove.x, this.iMove.y - this.fontSize, this.fontSize, this.fontSize);
-        this.iMove.x = this.xCoordFactor + this.xCoordFactor * 0.5 * ratioX;
-        this.iMove.y = this.yCoordFactor * (this.iMove.index + 1) + this.yCoordFactor * (this.jMove.index - this.iMove.index) * ratioY;
-        this.ctx.fillText(this.array[this.iMove.index], this.iMove.x, this.iMove.y);
+    _drawStep(move, ratioX, ratioY) {
+        this.ctx.clearRect(move.x, move.y - this.fontSize, this.fontSize, this.fontSize);
+        move.x = this.xCoordFactor + this.xCoordFactor * ratioX;
+        move.y = this.yCoordFactor * (move.index + 1) + this.yCoordFactor * ratioY;
+        this.ctx.fillText(this.array[move.index], move.x, move.y);
 
     }
-    _drawStepJ(ratioX, ratioY) {
-        this.ctx.clearRect(this.jMove.x, this.jMove.y - this.fontSize, this.fontSize, this.fontSize);
-        this.jMove.x = this.xCoordFactor + this.xCoordFactor * 1.6 * ratioX;
-        this.jMove.y = this.yCoordFactor * (this.jMove.index + 1) - this.yCoordFactor * (this.jMove.index - this.iMove.index) * ratioY;
-        this.ctx.fillText(this.array[this.jMove.index], this.jMove.x, this.jMove.y);
-    }
+
+
 
 }
 

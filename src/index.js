@@ -1,20 +1,29 @@
-import AlgorithmCanvas from "./utils/AlgorithmCanvas.js"
- 
-let algorithmCanvas = new AlgorithmCanvas();
+import Sort from "./utils/Sort.js"
 
-document.body.innerHTML = `    
+let sort = new Sort(Number(location.search.replace("?", "")));
+
+document.body.innerHTML += `
     <footer>
-        <button class="iconfont icon-prior"></button>
-        <button class="iconfont icon-restart"></button>
-        <button class="iconfont icon-next"></button>
+        <button ></button>
+        <button ></button>
+        <button ></button>
     </footer> `;
 document.querySelector("button:nth-of-type(1)").onclick = () => {
-    algorithmCanvas.prior();
+    sort.prior();
+    uiChange();
 }
 document.querySelector("button:nth-of-type(2)").onclick = () => {
-    algorithmCanvas.start();
+    sort.start();
 }
 document.querySelector("button:nth-of-type(3)").onclick = () => {
-    algorithmCanvas.next();
+    sort.next();
+    uiChange();
+}
+function uiChange() {
+    document.querySelector("button:nth-of-type(1)").innerHTML = "⇦ " + sort.preSortName;
+    document.querySelector("button:nth-of-type(2)").innerHTML =  sort.sortName + " ↺";
+    document.querySelector("button:nth-of-type(3)").innerHTML =   sort.nextSortName + " ⇨";
+    history.replaceState({},sort.sortName,`?${sort.sortIndex}`)
 }
 document.querySelector("button:nth-of-type(2)").click();
+uiChange();

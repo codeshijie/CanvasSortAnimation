@@ -1,18 +1,26 @@
 
 export default class ShellSort {
-    constructor(canvas, elementCount = 14, fontSize = 14) {
-        this.sortName = '希尔排序算法';
-        this.elementCount = elementCount;
-        this.array = null;
-        this.canvas = canvas;
+    static sortName =  '希尔排序';
+    constructor(option) {
+        this.elementCount = option.elementCount;
+        this.animationDuration = option.animationDuration || 400;
+
+        this.canvas = document.createElement("canvas");
+        this.canvas.width = option.canvasPositon.width;
+        this.canvas.height = option.canvasPositon.height;
+        document.body.appendChild(this.canvas);
+
         this.ctx = this.canvas.getContext('2d');
-        this.animationDuration = 350;
         this.xCoordFactor = this.canvas.width / this.elementCount;
         this.yCoordFactor = 40;
-        this.fontSize = fontSize;
+        this.fontSize = this.xCoordFactor / 1.5;
         this.ctx.font = ` ${this.fontSize}px serif`;
         this.sortDrawDate = {};
         this.yMoveDuration = 1;
+        this.array = null;
+    }
+    destory() {
+        document.body.removeChild(this.canvas); 
     }
     begin() {
         this.random();
