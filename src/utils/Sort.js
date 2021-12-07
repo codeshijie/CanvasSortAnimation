@@ -30,15 +30,21 @@ export default class Sort {
         if (this.sortObject && this.sortObject.destory) {
             this.sortObject.destory();
         }
-        this.sortObject = new this.sortClassArray[this.sortIndex]({
+
+        let option = {
             canvasPositon: {
-                left: 0,
-                top: 0,
                 width: Math.max(window.innerWidth, 375),
                 height: Math.max(window.innerHeight, 667) - 50
             },
-            elementCount: 10
-        });
+            //排序元素数量
+            elementCount: 12
+        }
+        if (this.sortClassArray[this.sortIndex] === InsertVsShellSort) {
+            //动画间隔时间
+            option.animationDuration = 20;
+            option.elementCount = 60;
+        }
+        this.sortObject = new this.sortClassArray[this.sortIndex](option);
         this.sortObject.begin();
     }
     prior() {

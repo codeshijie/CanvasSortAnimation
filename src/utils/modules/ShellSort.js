@@ -1,6 +1,6 @@
 
 export default class ShellSort {
-    static sortName =  '希尔排序';
+    static sortName = '希尔排序';
     constructor(option) {
         this.elementCount = option.elementCount;
         this.animationDuration = option.animationDuration || 400;
@@ -12,20 +12,22 @@ export default class ShellSort {
 
         this.ctx = this.canvas.getContext('2d');
         this.xCoordFactor = this.canvas.width / this.elementCount;
-        this.yCoordFactor = 40;
+        this.yCoordFactor = 30;
+        this.groupFactor = 2;
         this.fontSize = this.xCoordFactor / 1.5;
         this.ctx.font = ` ${this.fontSize}px serif`;
-        this.sortDrawDate = {};
+        this.sortInsertData = {};
         this.yMoveDuration = 1;
         this.array = null;
+
     }
     destory() {
-        document.body.removeChild(this.canvas); 
+        document.body.removeChild(this.canvas);
     }
     begin() {
         this.random();
         this.draw();
-        this.sort(Math.floor(this.array.length / 2));
+        this.sort(Math.floor(this.array.length / this.groupFactor) || 1);
     }
     random() {
         this.array = new Array();
@@ -40,39 +42,39 @@ export default class ShellSort {
             let x = this.xCoordFactor * (i);
             let y = this.yCoordFactor;
             let color = '#666'
-            if (this.sortDrawDate.begin != undefined && i % this.sortDrawDate.group === this.sortDrawDate.begin) {
+            if (this.sortInsertData.begin != undefined && i % this.sortInsertData.group === this.sortInsertData.begin) {
                 x = this.xCoordFactor * (i);
                 y = this.yCoordFactor + this.xCoordFactor;
-                if (this.array[this.sortDrawDate.targetIndex] > this.array[this.sortDrawDate.sourceIndex] &&
-                    this.sortDrawDate.xChangeTime) {
-                    let ratioX = (new Date() - this.sortDrawDate.xChangeTime) / this.animationDuration;
+                if (this.array[this.sortInsertData.targetIndex] > this.array[this.sortInsertData.sourceIndex] &&
+                    this.sortInsertData.xChangeTime) {
+                    let ratioX = (new Date() - this.sortInsertData.xChangeTime) / this.animationDuration;
                     let multiplier = 0;
-                    if (i === this.sortDrawDate.targetIndex) {
+                    if (i === this.sortInsertData.targetIndex) {
                         multiplier = 1;
                     }
-                    if (i === this.sortDrawDate.sourceIndex) {
+                    if (i === this.sortInsertData.sourceIndex) {
                         multiplier = -1;
                     }
-                    x = this.xCoordFactor * (i) + ratioX * this.xCoordFactor * this.sortDrawDate.group * multiplier;
+                    x = this.xCoordFactor * (i) + ratioX * this.xCoordFactor * this.sortInsertData.group * multiplier;
                 }
-                if ((new Date() - this.sortDrawDate.ydownChangeTime) < this.animationDuration) {
-                    let ratioY = (new Date() - this.sortDrawDate.ydownChangeTime) / this.animationDuration;
+                if ((new Date() - this.sortInsertData.ydownChangeTime) < this.animationDuration) {
+                    let ratioY = (new Date() - this.sortInsertData.ydownChangeTime) / this.animationDuration;
                     y = this.yCoordFactor + this.xCoordFactor * ratioY;
                 }
-                if ((new Date() - this.sortDrawDate.yUpChangeTime) < this.animationDuration && this.sortDrawDate.group != 1) {
-                    let ratioY = (new Date() - this.sortDrawDate.yUpChangeTime) / this.animationDuration;
+                if ((new Date() - this.sortInsertData.yUpChangeTime) < this.animationDuration && this.sortInsertData.group != 1) {
+                    let ratioY = (new Date() - this.sortInsertData.yUpChangeTime) / this.animationDuration;
                     y = this.yCoordFactor + this.xCoordFactor - this.xCoordFactor * ratioY;
                 }
-                if (i <= this.sortDrawDate.sortRange) {
+                if (i <= this.sortInsertData.sortRange) {
                     color = 'green'
                 }
-                if (i === this.sortDrawDate.sourceIndex) {
+                if (i === this.sortInsertData.sourceIndex) {
                     color = '#f25022'
                 }
-                if (i === this.sortDrawDate.targetIndex) {
+                if (i === this.sortInsertData.targetIndex) {
                     color = '#ffb901'
                 }
-                if (this.sortDrawDate.done) {
+                if (this.sortInsertData.done) {
                     color = 'green'
                 }
             }
@@ -92,22 +94,23 @@ export default class ShellSort {
         this.ctx.fillText(this.array[index], x + this.xCoordFactor / 2, y + this.xCoordFactor / 2);
         this.ctx.restore();
     }
-
+    //group拆分
     sort(group, begin = 0) {
         this.sortPromise(begin, group).then(res => {
             if (begin + 1 < group) {
                 this.sort(group, ++begin);
             } else if (group > 1) {
-                this.sort(Math.floor(group / 2));
+                this.sort(Math.floor(group / this.groupFactor) || 1);
             }
         })
     }
+    //group数据初始化，返回promise
     sortPromise(begin, group) {
         let resolve = null;
         let promise = new Promise((res) => {
             resolve = res;
         });
-        this.sortDrawDate = {
+        this.sortInsertData = {
             begin,
             group,
             ydownChangeTime: new Date()
@@ -118,20 +121,23 @@ export default class ShellSort {
         return promise;
     }
 
+    //数据直接插入排序，begin递增并递归调用，结束执行resolve
     sortInsert(begin, group, resolve) {
         this.sortInsertPromise(begin, group).then(() => {
             if (begin + group < this.array.length) {
-                this.sortDrawDate.sortRange = begin + group;
+                this.sortInsertData.sortRange = begin + group;
                 this.sortInsert(begin + group, group, resolve)
             } else {
-                this.sortDrawDate.done = true;
-                this.sortDrawDate.yUpChangeTime = new Date()
+                this.sortInsertData.sortRange = this.array.length;
+                this.sortInsertData.done = true;
+                this.sortInsertData.yUpChangeTime = new Date()
                 setTimeout(() => {
                     resolve();
                 }, this.animationDuration * this.yMoveDuration)
             }
         })
     }
+    //数据直接插入排序一次排序，返回promise
     sortInsertPromise(i, group) {
         let resolve = null;
         let promise = new Promise((res) => {
@@ -140,12 +146,13 @@ export default class ShellSort {
         this.sortInsertMove(i, group, resolve);
         return promise;
     }
+      //数据直接插入排序一次排序，i递减并递归调用，结束执行resolve
     sortInsertMove(i, group, resolve) {
         let j = i - group;
-        this.sortDrawDate.sourceIndex = i;
-        this.sortDrawDate.targetIndex = j;
+        this.sortInsertData.sourceIndex = i;
+        this.sortInsertData.targetIndex = j;
         if (j >= 0 && this.array[j] > this.array[i]) {
-            this.sortDrawDate.xChangeTime = new Date();
+            this.sortInsertData.xChangeTime = new Date();
 
             setTimeout(() => {
                 let temp = this.array[i];
@@ -154,7 +161,7 @@ export default class ShellSort {
                 this.sortInsertMove(j, group, resolve);
             }, this.animationDuration)
         } else {
-            delete this.sortDrawDate.xChangeTime;
+            delete this.sortInsertData.xChangeTime;
             if (j < 0) {
                 resolve();
             } else {

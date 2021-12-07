@@ -9,6 +9,9 @@ html {
   line-height: 1.2;
   background: #fff;
 }
+body {
+  padding-bottom: 50px;
+}
 footer {
   display: flex;
   position: fixed;
@@ -21,10 +24,4 @@ button {
   height: 50px;
   outline: none;
   font-size: 14px;
-}
-
-canvas {
-  position: absolute;
-  left: 0;
-  top: 0;
 }
