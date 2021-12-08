@@ -25,7 +25,7 @@ export default class BubbleSort {
         this.array = null;
         //时间， 记录动画时刻
         this.timeAnimation = null;
-        this.loop = 0;
+        this.loop = 1;
 
     }
     destory() {
@@ -45,13 +45,17 @@ export default class BubbleSort {
         }
     }
 
-    sort(i = 0, j = 1) {
-        if (this.loop === this.array.length) return;
-        if (i === this.array.length || j === this.array.length - this.loop) {
-            this.sort(0, 1, ++this.loop);
+    sort(i = this.array.length - 1) {
+        let j = i - 1;
+        if (i === this.loop - 1) {
+            if (this.loop == this.array.length) {
+                return
+            }
+            this.loop++;
+            this.sort(this.array.length - 1);
             return;
         }
-        if (this.array[i] > this.array[j]) {
+        if (this.array[i] < this.array[j]) {
             this._changeSort(i, j, true);
         } else {
             this._changeSort(i, j, false);
@@ -76,8 +80,8 @@ export default class BubbleSort {
         if (new Date() - this.timeAnimation <= this.animationDuration) {
             let ratioY = (new Date() - this.timeAnimation) / this.animationDuration;
             let ratioX = Math.sin(Math.PI * ratioY);
-            this._drawStep(this.iMove, ratioX * (changeBoolen ? 0.5 : 0.5), (changeBoolen ? ratioY : 0));
-            this._drawStep(this.jMove, ratioX * (changeBoolen ? 1.5 : 0.5), (changeBoolen ? -ratioY : 0));
+            this._drawStep(this.iMove, ratioX * (changeBoolen ? 0.5 : 0.5), (changeBoolen ? -ratioY : 0));
+            this._drawStep(this.jMove, ratioX * (changeBoolen ? 1.5 : 0.5), (changeBoolen ? ratioY : 0));
             window.requestAnimationFrame(() => { this._step(changeBoolen) });
         } else {
             if (changeBoolen) {
@@ -86,7 +90,7 @@ export default class BubbleSort {
                 this.array[this.iMove.index] = temp;
             }
             this.draw();
-            this.sort(this.jMove.index, this.jMove.index + 1);
+            this.sort(this.jMove.index);
         }
     }
     _drawStep(move, ratioX, ratioY) {
