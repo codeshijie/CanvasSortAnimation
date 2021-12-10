@@ -37,10 +37,12 @@ export default class Sort {
                 height: Math.max(window.innerHeight, 667) - 50
             },
             //排序元素数量
-            elementCount: 12
+            elementCount: 12,
+            //动画间隔时间
+            animationDuration: 260
         }
         if (this.sortClassArray[this.sortIndex] === InsertVsShellSort) {
-            //动画间隔时间
+
             option.animationDuration = 20;
             option.elementCount = 60;
         }

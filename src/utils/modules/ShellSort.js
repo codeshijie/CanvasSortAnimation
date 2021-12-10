@@ -45,7 +45,8 @@ export default class ShellSort {
             if (this.sortInsertData.begin != undefined && i % this.sortInsertData.group === this.sortInsertData.begin) {
                 x = this.xCoordFactor * (i);
                 y = this.yCoordFactor + this.xCoordFactor;
-                if (this.array[this.sortInsertData.targetIndex] > this.array[this.sortInsertData.sourceIndex] &&
+                if (this.sortInsertData.targetIndex && 
+                    this.array[this.sortInsertData.targetIndex] > this.array[this.sortInsertData.sourceIndex] &&
                     this.sortInsertData.xChangeTime) {
                     let ratioX = (new Date() - this.sortInsertData.xChangeTime) / this.animationDuration;
                     let multiplier = 0;

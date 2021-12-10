@@ -127,17 +127,12 @@ export default class QuickSort {
             let height = this.yCoordHeight * (changeArrayItem.snapshot[i] / 100);
             if (i === changeArrayItem.sourceIndex) {
                 this.ctx.fillStyle = '#f25022';
-                this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
-
             } else if (i === changeArrayItem.targetIndex) {
                 this.ctx.fillStyle = '#ffb901';
-
-                this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
-
             } else {
                 this.ctx.fillStyle = '#ccc'
-                this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
             }
+            this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
         }
         this.drawParenthesesLine(changeArrayItem);
     }
@@ -147,7 +142,7 @@ export default class QuickSort {
         if (changeArrayItem.sourceIndex <= changeArrayItem.targetIndex) {
             this.ctx.bezierCurveTo(this.itemWidth * changeArrayItem.sourceIndex * 2 + this.itemWidth / 2, this.yCoordEnd + 5,
                 this.itemWidth * (changeArrayItem.sourceIndex + changeArrayItem.targetIndex) + this.itemWidth, this.yCoordEnd + 60,
-                this.itemWidth * changeArrayItem.targetIndex * 2 + this.itemWidth + + this.itemWidth / 2, this.yCoordEnd + 5);
+                this.itemWidth * changeArrayItem.targetIndex * 2 + this.itemWidth +  this.itemWidth / 2, this.yCoordEnd + 5);
         } else {
             this.ctx.bezierCurveTo(this.itemWidth * changeArrayItem.sourceIndex * 2 + this.itemWidth + this.itemWidth / 2, this.yCoordEnd + 5,
                 this.itemWidth * (changeArrayItem.sourceIndex + changeArrayItem.targetIndex) + this.itemWidth, this.yCoordEnd + 60,

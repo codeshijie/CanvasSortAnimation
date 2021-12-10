@@ -16,7 +16,7 @@ export default class InsertVsShellSort {
         this.shellShort.draw();
         this.insertSort.draw();
        
-        this.shellShort.sort(Math.floor(this.insertSort.array.length / 2));
+        this.shellShort.sort(Math.floor(this.insertSort.array.length / 2) || 1);
         this.insertSort.sort(1);
     }
     destory() {
