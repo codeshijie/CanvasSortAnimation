@@ -43,8 +43,13 @@ export default class Sort {
         }
         if (this.sortClassArray[this.sortIndex] === InsertVsShellSort) {
 
-            option.animationDuration = 20;
-            option.elementCount = 60;
+            option.animationDuration = 150;
+            option.elementCount = 30;
+        }
+        if (this.sortClassArray[this.sortIndex] === QuickSort) {
+
+            option.animationDuration = 150;
+            option.elementCount = 30;
         }
         this.sortObject = new this.sortClassArray[this.sortIndex](option);
         this.sortObject.begin();
