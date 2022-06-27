@@ -42,56 +42,8 @@ export default class QuickSort {
             let height = this.yCoordHeight * (this.array[i] / 100);
             this.ctx.fillRect(this.itemWidth * i * 2 + this.itemWidth / 2, this.yCoordEnd, this.itemWidth, -height);
         }
-    }
-    sort(start, end) {
-        if (start >= end) return;
-        let start1 = start;
-        let end1 = end;
-        while (true) {
-            if (start1 >= end1) {
-                break;
-            }
-            for (end1; end1 > start1; end1--) {
-                if (this.array[start1] > this.array[end1]) {
-                    let temp = this.array[start1];
-                    this.array[start1] = this.array[end1];
-                    this.array[end1] = temp;
-                    this.changeArray.push({ sourceIndex: start1, targetIndex: end1, snapshot: JSON.parse(JSON.stringify(this.array)), change: true });
-                    break;
-                }
-                this.changeArray.push({ sourceIndex: start1, targetIndex: end1, snapshot: JSON.parse(JSON.stringify(this.array)) });
-
-            }
-            for (start1; start1 < end1; start1++) {
-                if (this.array[start1] > this.array[end1]) {
-                    let temp = this.array[start1];
-                    this.array[start1] = this.array[end1];
-                    this.array[end1] = temp
-                    this.changeArray.push({ sourceIndex: end1, targetIndex: start1, snapshot: JSON.parse(JSON.stringify(this.array)), change: true });
-                    break;
-                }
-                this.changeArray.push({ sourceIndex: end1, targetIndex: start1, snapshot: JSON.parse(JSON.stringify(this.array)) });
-
-            }
-        }
-        this.sort(start, start1)
-        this.sort(start1 + 1, end)
-    }
-
-    drawSort(loop) {
-        let dateTimeNow = new Date();
-        let changeArrayItem = this.changeArray[loop];
-        if (changeArrayItem.change) {
-            this.drawChangeItem(changeArrayItem, dateTimeNow)
-        } else {
-            this.drawUnChangeItem(changeArrayItem)
-        }
-        if (loop < this.changeArray.length - 1) {
-            setTimeout(() => { this.drawSort(++loop); }, this.animationDuration)
-        } else {
-            setTimeout(() => { this.draw(); }, this.animationDuration)
-        }
-    }
+    } 
+ 
     drawChangeItem(changeArrayItem, dateTime) {
         let ratio = (new Date() - dateTime) / this.animationDuration;
         if (ratio > 1) return;
